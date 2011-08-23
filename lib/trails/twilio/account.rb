@@ -52,6 +52,8 @@ module Trails
           'Method' => opts['Method'] || opts[:method] || 'GET',
           'Timeout' => opts['Timeout'] || opts[:timeout] || 15
         }
+
+        params.merge(optional_params(opts))
         request( 'Calls', 'POST', params )
       end
 
@@ -193,6 +195,20 @@ module Trails
         return File.join( RAILS_ROOT, 'config', 'twilio.yml' )
       end
 
+      # find definition of these optional parameters at: http://www.twilio.com/docs/api/rest/making_calls
+      def optional_params(opts)
+        params = {}
+
+        params['FallbackUrl'] = opts['FallbackUrl'] || opts[:fallback_url]
+        params['FallbackMethod'] = opts['FallbackMethod'] || opts[:fallback_method]
+        params['StatusCallback'] = opts['StatusCallback'] || opts[:status_callback]
+        params['StatusCallbackMethod'] = opts['StatusCallbackMethod'] || opts[:status_callback_method]
+        params['SendDigits'] = opts['SendDigits'] || opts[:send_digits]
+        raise ("SendDigits parameter can only contain the following characters:0-9*#") unless (params['SendDigits'].nil? or (/[0-9\*#]+/.match(params['SendDigits'])))
+        params['IfMachine'] = opts['IfMachine'] || opts[:if_machine]
+
+        params.delete_if{ |k,v| v.nil?}
+      end
     end # class Account
   end # module Twilio
 end # module Trails
