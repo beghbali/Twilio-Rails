@@ -53,7 +53,7 @@ module Trails
           'Timeout' => opts['Timeout'] || opts[:timeout] || 15
         }
 
-        params.merge(optional_params(opts))
+        params.merge!(optional_params(opts))
         request( 'Calls', 'POST', params )
       end
 
